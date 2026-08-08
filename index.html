@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeyondFacial | DIDS-AIGC</title>
+    <meta name="description" content="BeyondFacial - A project by DIDS-AIGC. Exploring the boundaries of facial recognition and beyond.">
+    <style>
+        /* ===== Variables ===== */
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --accent: #06b6d4;
+            --bg: #0a0a1a;
+            --bg-card: rgba(255,255,255,0.04);
+            --border: rgba(255,255,255,0.08);
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --glow: rgba(99,102,241,0.2);
+        }
+
+        /* ===== Reset & Base ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+
+        /* ===== Animated Background ===== */
+        .bg-animation {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, var(--glow), transparent 70%);
+            top: -200px; right: -100px;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .bg-animation::after {
+            content: '';
+            position: absolute;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(6,182,212,0.1), transparent 70%);
+            bottom: -150px; left: -100px;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -30px) scale(1.1); }
+        }
+
+        /* ===== Grid Overlay ===== */
+        .grid-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
+            background-size: 80px 80px;
+            z-index: -1;
+        }
+
+        /* ===== Navigation ===== */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 1rem 2rem;
+            background: rgba(10,10,26,0.8);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-brand span {
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+
+        .nav-links a {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover { color: #fff; }
+
+        /* ===== Hero Section ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            background: rgba(6,182,212,0.05);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease 0.1s both;
+        }
+
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, var(--primary-light), var(--accent), #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp 0.8s ease 0.3s both;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #fff;
+            box-shadow: 0 4px 20px var(--glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--glow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary-light);
+            background: rgba(99,102,241,0.05);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== Features Section ===== */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            font-size: 1.05rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(99,102,241,0.1);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ===== About Section ===== */
+        .about-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .about-content p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a { color: var(--primary-light); }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            nav { padding: 0.8rem 1rem; }
+            .nav-links { gap: 1rem; }
+            .hero { padding: 5rem 1.5rem 3rem; }
+            .section { padding: 3rem 1.5rem; }
+            .about-content { padding: 2rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Effects -->
+    <div class="bg-animation"></div>
+    <div class="grid-overlay"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-brand"><span>Beyond</span>Facial</div>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="https://github.com/DIDS-AIGC/BeyondFacial" target="_blank">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="badge">🚀 Powered by DIDS-AIGC</div>
+        <h1>Go <span class="gradient">Beyond</span> Facial</h1>
+        <p>探索人脸识别技术的边界，用 AI 重新定义安全与智能的未来。</p>
+        <div class="hero-buttons">
+            <a href="https://github.com/DIDS-AIGC/BeyondFacial" class="btn btn-primary" target="_blank">
+                ⭐ View on GitHub
+            </a>
+            <a href="#features" class="btn btn-outline">
+                Learn More ↓
+            </a>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section" id="features">
+        <h2 class="section-title">Core Features</h2>
+        <p class="section-subtitle">前沿技术驱动，打造下一代智能系统</p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>Deep Learning</h3>
+                <p>基于深度神经网络的特征提取与识别引擎，实现高精度人脸分析与理解。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>Intrusion Detection</h3>
+                <p>智能入侵检测系统，实时监测异常行为，守护数字世界的安全防线。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">✨</div>
+                <h3>AIGC Integration</h3>
+                <p>融合 AI 生成内容技术，增强数据多样性，提升模型鲁棒性与泛化能力。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Real-time Processing</h3>
+                <p>毫秒级响应速度，支持大规模并发场景下的实时推理与决策。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔬</div>
+                <h3>Research Driven</h3>
+                <p>源自学术研究，紧跟前沿论文，持续迭代优化算法性能。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3>Open Source</h3>
+                <p>完全开源，欢迎社区贡献。透明可审计，共建可信 AI 生态。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section class="section" id="about">
+        <h2 class="section-title">About This Project</h2>
+        <p class="section-subtitle">关于 BeyondFacial</p>
+        <div class="about-content">
+            <p>
+                <strong>BeyondFacial</strong> 是由 <strong>DIDS-AIGC</strong> 发起的开源项目，
+                致力于探索人脸识别技术的更深层次应用——不仅限于"识别"，
+                更关注安全性、隐私保护与 AI 生成内容的融合创新。
+            </p>
+            <p>
+                我们相信，真正的智能不止于表面。Beyond Facial，Beyond Limits.
+            </p>
+            <a href="https://github.com/DIDS-AIGC/BeyondFacial" class="btn btn-primary" target="_blank" style="margin-top: 1rem; display: inline-block;">
+                📂 Explore Repository
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 <a href="https://github.com/DIDS-AIGC" target="_blank">DIDS-AIGC</a>. All rights reserved.</p>
+        <p style="margin-top: 0.5rem;">Built with ❤️ and deployed via GitHub Pages</p>
+    </footer>
+
+</body>
+</html>
