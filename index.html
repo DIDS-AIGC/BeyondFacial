@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BeyondFacial: Identity-Preserving Personalized Generation Beyond Facial Close-ups</title>
+<meta name="description" content="BeyondFacial (ACM MM 2026): a tuning-free, plug-and-play method for identity-preserving personalized generation beyond facial close-ups.">
+<style>
+  :root{
+    --ink:#1a1a1a; --muted:#5a5a5a; --accent:#b31b1b; --link:#1a4fa0;
+    --rule:#e2e2e2; --bg:#ffffff; --soft:#f7f7f7;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.65; font-size:16px;
+  }
+  .wrap{max-width:1000px;margin:0 auto;padding:0 24px;}
+  a{color:var(--link);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  /* ---------- header ---------- */
+  header{padding:56px 0 24px;}
+  h1.title{font-size:2.1rem;line-height:1.25;font-weight:700;letter-spacing:-0.01em;}
+  h1 .name{color:var(--accent);}
+  .venue{margin-top:10px;font-size:1rem;color:var(--muted);}
+  .venue strong{color:var(--ink);}
+  .authors{margin-top:18px;font-size:1.02rem;}
+  .authors a{color:var(--ink);}
+  .affils{color:var(--muted);font-size:0.92rem;margin-top:4px;}
+  .links{margin-top:20px;display:flex;flex-wrap:wrap;gap:10px;}
+  .links a{
+    display:inline-block;padding:7px 16px;border:1px solid var(--ink);
+    font-size:0.92rem;color:var(--ink);background:#fff;
+  }
+  .links a:hover{background:var(--ink);color:#fff;text-decoration:none;}
+
+  /* ---------- sections ---------- */
+  section{padding:34px 0 6px;}
+  h2{font-size:1.45rem;font-weight:700;margin-bottom:14px;letter-spacing:-0.005em;}
+  h3{font-size:1.08rem;font-weight:650;margin:20px 0 8px;}
+  p{margin-bottom:12px;text-align:justify;}
+  .lead{color:var(--muted);font-size:0.95rem;}
+  figure{margin:18px 0 8px;}
+  figure img{width:100%;height:auto;display:block;border:1px solid var(--rule);}
+  figcaption{font-size:0.88rem;color:var(--muted);margin-top:8px;text-align:left;line-height:1.5;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  @media (max-width:760px){.two-col{grid-template-columns:1fr;}h1.title{font-size:1.6rem;}}
+
+  /* ---------- tables ---------- */
+  .tbl-wrap{overflow-x:auto;margin:16px 0 6px;}
+  table{border-collapse:collapse;width:100%;font-size:0.92rem;background:#fff;}
+  th,td{padding:7px 10px;text-align:center;border-bottom:1px solid var(--rule);white-space:nowrap;}
+  th{border-bottom:2px solid var(--ink);font-weight:650;}
+  td:first-child,th:first-child{text-align:left;}
+  tr.best td{font-weight:700;}
+  .up::after{content:" ↑";color:var(--muted);font-weight:400;}
+  .down::after{content:" ↓";color:var(--muted);font-weight:400;}
+  .cap{font-size:0.88rem;color:var(--muted);margin:4px 0 18px;}
+
+  /* ---------- misc ---------- */
+  .hl{background:#fdf0ef;padding:0 3px;}
+  .eq{
+    font-family:"STIX Two Math","Times New Roman",serif;font-style:italic;
+    background:var(--soft);border:1px solid var(--rule);padding:14px 18px;margin:12px 0;
+    overflow-x:auto;font-size:1.02rem;
+  }
+  ul.tight{margin:6px 0 14px 22px;}
+  ul.tight li{margin-bottom:8px;text-align:justify;}
+  pre.bibtex{
+    background:var(--soft);border:1px solid var(--rule);padding:16px;
+    font-size:0.82rem;overflow-x:auto;line-height:1.5;font-family:"SF Mono",Menlo,Consolas,monospace;
+  }
+  footer{margin-top:56px;border-top:1px solid var(--rule);padding:22px 0 44px;color:var(--muted);font-size:0.85rem;}
+  .grid-note{font-size:0.85rem;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1 class="title"><span class="name">BeyondFacial</span>: Identity-Preserving Personalized Generation Beyond Facial Close-ups</h1>
+  <div class="venue"><strong>ACM MM 2026</strong> &nbsp;·&nbsp; Rio de Janeiro, Brazil</div>
+  <div class="authors">
+    Songsong Zhang<sup>*</sup>, Chuanqi Tang<sup>*</sup>, Minglong Li, Xueqiong Li,
+    Shaowu Yang, Yuanxi Peng, Wenjing Yang, Jing Zhao<sup>†</sup>
+  </div>
+  <div class="affils">
+    National University of Defense Technology &nbsp;·&nbsp; Tongji University<br>
+    <sup>*</sup>Equal contribution &nbsp;&nbsp; <sup>†</sup>Corresponding author
+  </div>
+  <div class="links">
+    <a href="https://doi.org/10.1145/3767308.3836071">Paper (ACM DL)</a>
+    <a href="https://github.com/dids-aigc/BeyondFacial">Code &amp; Data</a>
+  </div>
+</header>
+
+<figure>
+  <img src="assets/teaser.jpg" alt="BeyondFacial teaser: identity-preserved full-body generation across diverse scenes">
+  <figcaption><b>Figure 1.</b> Existing identity-preserving personalized generation (IPPG) methods over-rely on facial close-ups, hindering visual storytelling. BeyondFacial generates identity-preserved, prompt-faithful images with full-body actions, rich scenes and film-grade composition — without any fine-tuning or manual masking.</figcaption>
+</figure>
+
+<section id="abstract">
+  <h2>Abstract</h2>
+  <p>Identity-Preserving Personalized Generation (IPPG) has advanced film production and artistic creation, yet existing approaches overemphasize facial regions — resulting in outputs dominated by <i>facial close-ups</i>. These methods suffer from weak visual narrativity and poor semantic consistency under complex text prompts, rooted in identity (ID) feature embeddings that undermine the semantic expressiveness of generative models.</p>
+  <p>To address these issues, we present an IPPG method that breaks the constraint of facial close-ups, achieving synergistic optimization of identity fidelity and scene semantic creation. Specifically, we design a <b>Dual-Line Inference (DLI)</b> pipeline with identity-semantic separation, resolving the ID-semantics representation conflict in traditional single-path architectures. Further, we propose an <b>Identity Adaptive Fusion (IdAF)</b> strategy that defers ID-semantic fusion to the noise prediction stage, integrating adaptive attention fusion and noise masking to avoid ID embedding interference on semantics without manual masking. Finally, an <b>Identity Aggregation Prepending (IdAP)</b> module aggregates ID information in place of random initializations, further enhancing identity preservation.</p>
+  <p>Experimental results validate that our method achieves stable and effective performance in IPPG tasks beyond facial close-ups, enabling efficient generation without manual masking or fine-tuning. As a plug-and-play component, it can be rapidly deployed in existing IPPG frameworks, facilitating film-level character-scene creation and enriching personalized generation for related domains.</p>
+</section>
+
+<section id="motivation">
+  <h2>Motivation: Why Do IPPG Methods Collapse to Close-ups?</h2>
+  <p>We trace the close-up collapse to a structural cause: in prevailing single-path pipelines, the identity embedding is injected into the <i>same</i> generation branch that carries the text semantics. Under the same random seed, injecting the ID embedding transforms an otherwise full-body, scene-rich image into a facial close-up — the ID signal overwrites the spatial and semantic layout that the prompt describes.</p>
+  <figure>
+    <img src="assets/fig2_motivation.jpg" alt="Under the same random seed, ID embedding transforms full-body images into facial close-ups">
+    <figcaption><b>Figure 2.</b> Under the same random seed, ID embedding transforms full-body images into facial close-ups.</figcaption>
+  </figure>
+  <p>This observation motivates our core design principle: <span class="hl">identity and semantics should travel on separate lines and only be fused where they cannot interfere — at the noise-prediction stage.</span></p>
+</section>
+
+<section id="method">
+  <h2>Method</h2>
+  <figure>
+    <img src="assets/fig3_pipeline.jpg" alt="Overview of BeyondFacial: DLI, IdAF and IdAP">
+    <figcaption><b>Figure 3.</b> Overview of BeyondFacial: DLI separates the identity and semantic lines; IdAF fuses the two lines at the noise-prediction stage via adaptive attention fusion and noise masking; IdAP aggregates ID information to replace randomly initialized ID features.</figcaption>
+  </figure>
+
+  <h3>1. Dual-Line Inference (DLI)</h3>
+  <p>Instead of feeding text and identity through one entangled branch, DLI runs an <b>identity line</b> and a <b>semantic line</b> in parallel. The semantic line preserves the base T2I model's full compositional ability (scene, action, layout), while the identity line carries the facial ID signal. This separation resolves the ID–semantic representational conflict of single-path architectures and is the structural prerequisite for non-close-up generation.</p>
+
+  <h3>2. Identity Adaptive Fusion (IdAF)</h3>
+  <p>IdAF defers the ID–semantic fusion to the noise-prediction stage. The identity attention map is adaptively scaled by a factor λ<sup>(i)</sup> and fused into the semantic attention output:</p>
+  <div class="eq">A<sub>0</sub><sup>(i)</sup> = R( SM( λ<sup>(i)</sup> · R(Ā<sub>0</sub><sup>(i)</sup>, dim₁) ), dim₂ )</div>
+  <p>combined with <b>noise masking</b> that localizes where identity may be written. Fusion is activated only on the identity-relevant timesteps (see the IdAF activated-timestep analysis below), so the semantic layout is decided first and identity is injected afterwards — no manual face mask, bounding box, or inpainting step is ever required.</p>
+
+  <h3>3. Identity Aggregation Prepending (IdAP)</h3>
+  <p>IdAP aggregates identity information and prepends it in place of the randomly initialized ID features used by prior work. This suppresses interference from irrelevant identities during semantic generation and measurably boosts identity fidelity (see ablations).</p>
+
+  <p class="lead">The entire pipeline is <b>tuning-free and plug-and-play</b>: it wraps an off-the-shelf IPPG backbone (e.g., PhotoMaker) at inference time, and transfers across backbones (see the InfiniteYou/DiT results below).</p>
+</section>
+
+<section id="results">
+  <h2>Results</h2>
+
+  <h3>Qualitative Results</h3>
+  <figure>
+    <img src="assets/fig4_qualitative.jpg" alt="Qualitative results of BeyondFacial">
+    <figcaption><b>Figure 4.</b> Qualitative results. BeyondFacial renders full-body actions and prompt-specified scenes while preserving identity.</figcaption>
+  </figure>
+
+  <h3>Comparison with State-of-the-Art Methods</h3>
+  <figure>
+    <img src="assets/fig5_comparison.jpg" alt="Visual comparison with baselines">
+    <figcaption><b>Figure 5.</b> Visual comparison. Baselines collapse to facial close-ups; ours renders full-body actions and prompt-specified scenes with high identity fidelity.</figcaption>
+  </figure>
+
+  <h3>Quantitative Results (Main Set)</h3>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>Method</th><th>Face sim. (%)<span class="up"></span></th><th>DINO (%)<span class="up"></span></th><th>CLIP-I (%)<span class="up"></span></th><th>CLIP-T (%)<span class="up"></span></th><th>FID<span class="down"></span></th></tr>
+    <tr><td>PhotoMaker (Baseline)</td><td>52.01</td><td>46.46</td><td>62.09</td><td>28.46</td><td>117.90</td></tr>
+    <tr><td>PuLID</td><td>57.07</td><td>47.14</td><td>52.94</td><td><b>32.33</b></td><td>134.03</td></tr>
+    <tr><td>InstantID</td><td>54.68</td><td><b>51.93</b></td><td>54.18</td><td>27.21</td><td>127.80</td></tr>
+    <tr><td>IP-Adapter+PhotoMaker</td><td>58.10</td><td>47.79</td><td><b>79.28</b></td><td>28.72</td><td>211.68</td></tr>
+    <tr class="best"><td>BeyondFacial (Ours)</td><td>58.67</td><td>51.24</td><td>64.87</td><td>31.47</td><td><b>54.62</b></td></tr>
+  </table>
+  </div>
+  <p class="cap"><b>Table 1.</b> Main-set results. Ours achieves SOTA identity fidelity (Face sim. 58.67) with the best identity–semantic balance and by far the best image distribution quality (FID 54.62 vs. 117.90 baseline). High CLIP-I of IP-Adapter+PhotoMaker comes at the cost of close-up collapse and severe FID degradation.</p>
+
+  <h3>Harder Prompts: Extension Set</h3>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>Method</th><th>Face sim. (%)<span class="up"></span></th><th>DINO (%)<span class="up"></span></th><th>CLIP-I (%)<span class="up"></span></th><th>CLIP-T (%)<span class="up"></span></th><th>FID<span class="down"></span></th></tr>
+    <tr><td>PhotoMaker</td><td>28.90</td><td>9.95</td><td>39.25</td><td>29.22</td><td>375.87</td></tr>
+    <tr class="best"><td>BeyondFacial (Ours)</td><td>36.94</td><td>16.23</td><td>44.89</td><td>32.21</td><td>365.32</td></tr>
+    <tr><td>Improvement</td><td>+8.04</td><td>+6.28</td><td>+5.64</td><td>+2.99</td><td>−10.55</td></tr>
+  </table>
+  </div>
+  <p class="cap"><b>Table 2.</b> Extension-set results. Absolute scores are lower due to deliberately harder prompts, yet BeyondFacial maintains a comprehensive lead on every metric.</p>
+  <figure>
+    <img src="assets/fig41_vs_photomaker.jpg" alt="BeyondFacial vs. PhotoMaker on typical extension-set generations">
+    <figcaption><b>Figure 6.</b> BeyondFacial vs. PhotoMaker on typical generations from the extension set.</figcaption>
+  </figure>
+
+  <h3>User Study</h3>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>Method</th><th>Identity similarity</th><th>Image-text alignment</th><th>Image quality &amp; aesthetics</th><th>Scene &amp; figure integrity</th><th>Average</th></tr>
+    <tr><td>InstantID</td><td>50.89</td><td>48.06</td><td>47.20</td><td>49.35</td><td>48.88</td></tr>
+    <tr><td>PhotoMaker</td><td>47.95</td><td>60.85</td><td>56.89</td><td>60.50</td><td>56.55</td></tr>
+    <tr><td>IP-Adapter+PhotoMaker</td><td>63.58</td><td>48.45</td><td>53.35</td><td>52.51</td><td>54.47</td></tr>
+    <tr><td>PuLID</td><td>57.21</td><td>70.95</td><td>61.99</td><td>68.68</td><td>64.71</td></tr>
+    <tr class="best"><td>Ours</td><td>75.17</td><td>79.01</td><td>74.38</td><td>78.34</td><td>76.73</td></tr>
+  </table>
+  </div>
+  <p class="cap"><b>Table 3.</b> User study. BeyondFacial leads on all four criteria, with an average score of 76.73.</p>
+  <figure>
+    <img src="assets/fig13_userstudy.jpg" alt="User study radar chart across four criteria">
+    <figcaption><b>Figure 7.</b> User study. Average scores of all methods across the four evaluation criteria.</figcaption>
+  </figure>
+
+  <h3>Cross-Backbone Generalization</h3>
+  <figure>
+    <img src="assets/fig6_generalization.jpg" alt="Cross-backbone generalization to DiT-based InfiniteYou">
+    <figcaption><b>Figure 8.</b> Cross-backbone generalization. Our method transfers to DiT-based backbones (InfiniteYou/FLUX) as a plug-and-play component.</figcaption>
+  </figure>
+
+  <h3>Efficiency</h3>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>Metric</th><th>PhotoMaker</th><th>BeyondFacial</th><th>BF (opt.)</th></tr>
+    <tr><td>T<sub>total</sub> (s)</td><td>6.56</td><td>12.91</td><td>15.98</td></tr>
+    <tr><td>M<sub>peak</sub> (MB)</td><td>10,388</td><td>17,123</td><td>11,539</td></tr>
+    <tr><td>B<sub>max</sub></td><td>4</td><td>2</td><td>16</td></tr>
+    <tr><td>Throughput (img/h)</td><td>2,194</td><td>557</td><td><b>3,603</b></td></tr>
+    <tr><td>vs. PhotoMaker</td><td>1.00×</td><td>0.25×</td><td><b>1.64×</b></td></tr>
+  </table>
+  </div>
+  <p class="cap"><b>Table 4.</b> Efficiency comparison. BF (opt.) trades per-batch latency for near-baseline peak memory (+11%), 4× max batch size, and +64% throughput over PhotoMaker.</p>
+</section>
+
+<section id="analysis">
+  <h2>Analysis &amp; Ablations</h2>
+
+  <h3>Module Ablation</h3>
+  <div class="two-col">
+    <figure>
+      <img src="assets/fig7_ablation.jpg" alt="Module ablation: IdAF and IdAP">
+      <figcaption><b>Figure 9.</b> Module ablation. Adding IdAF and IdAP progressively improves identity fidelity and semantic alignment.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/fig8_scaling.jpg" alt="Attention weight scaling analysis">
+      <figcaption><b>Figure 10.</b> Attention weight scaling. Increasing the ID attention weight trades semantic layout for identity strength; our adaptive λ avoids manual tuning.</figcaption>
+    </figure>
+  </div>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>Method</th><th>Face sim. (%)<span class="up"></span></th><th>DINO (%)<span class="up"></span></th><th>CLIP-I (%)<span class="up"></span></th><th>CLIP-T (%)<span class="up"></span></th></tr>
+    <tr><td>SDXL</td><td>—</td><td>13.37</td><td>55.78</td><td>31.00</td></tr>
+    <tr><td>Ours (w/o IdAF)</td><td>36.34</td><td>45.58</td><td>57.27</td><td>30.97</td></tr>
+    <tr><td>Ours (w/o IdAP)</td><td>54.17</td><td>37.37</td><td>56.28</td><td>31.46</td></tr>
+    <tr class="best"><td>Ours (Full)</td><td>58.67</td><td>51.24</td><td>64.87</td><td>31.47</td></tr>
+  </table>
+  </div>
+  <p class="cap"><b>Table 5.</b> Module ablation studies. Quantitative results reveal the individual impacts of IdAF and IdAP.</p>
+
+  <h3>Necessity of DLI</h3>
+  <div class="tbl-wrap">
+  <table>
+    <tr><th>Config</th><th>Description</th><th>No-face<span class="down"></span></th><th>Close-up<span class="down"></span></th><th>Full-fig.<span class="up"></span></th></tr>
+    <tr><td>M0</td><td>Single-branch baseline</td><td>0.030</td><td>0.000</td><td>0.185</td></tr>
+    <tr><td>M1</td><td>Single + IdAP (immediate)</td><td>0.000</td><td>0.980</td><td>0.000</td></tr>
+    <tr><td>M2</td><td>Single + IdAP (deferred)</td><td>0.000</td><td>0.985</td><td>0.000</td></tr>
+    <tr><td>M3</td><td>DLI + IdAF (w/o IdAP)</td><td>0.045</td><td>0.115</td><td>0.520</td></tr>
+    <tr class="best"><td>M4</td><td>Full (DLI + IdAF + IdAP)</td><td>0.020</td><td>0.070</td><td>0.575</td></tr>
+  </table>
+  </div>
+  <p class="cap"><b>Table 6.</b> Close-up and full-figure rates under single-branch (M0–M2) and dual-line (M3–M4) architectures. Any single-branch variant collapses to close-ups (≥0.98); the dual-line design is what unlocks full-figure generation.</p>
+
+  <h3>ID-Injection Mechanism: PhotoMaker vs. BeyondFacial</h3>
+  <figure>
+    <img src="assets/fig11_photomaker_mech.jpg" alt="PhotoMaker ID injection mechanism analysis">
+    <figcaption><b>Figure 11.</b> PhotoMaker ID-injection mechanism analysis. Self- and cross-attention maps show the ID embedding hijacking the layout early in denoising.</figcaption>
+  </figure>
+  <figure>
+    <img src="assets/fig12_ours_mech.jpg" alt="BeyondFacial ID injection mechanism analysis">
+    <figcaption><b>Figure 12.</b> BeyondFacial ID-injection mechanism analysis. The ID line extracts targeted identity features while the semantic line keeps the scene layout intact.</figcaption>
+  </figure>
+  <figure>
+    <img src="assets/fig10_timesteps.jpg" alt="IdAF activated timesteps">
+    <figcaption><b>Figure 13.</b> IdAF activated timesteps. ID fidelity decreases when fusion is moved off the identity-relevant timesteps, validating the deferred-fusion schedule.</figcaption>
+  </figure>
+</section>
+
+<section id="applications">
+  <h2>Application Extensions</h2>
+  <p>Beyond facial close-ups unlocks a family of downstream uses that require coherent <i>character–scene</i> generation rather than portrait crops.</p>
+
+  <h3>Storyboard Scene Generation</h3>
+  <figure>
+    <img src="assets/fig14_storyboard.jpg" alt="Storyboard scene generation">
+    <figcaption><b>Figure 14.</b> Storyboard scene generation: the same identity is carried through a sequence of narrative shots with consistent appearance and varied composition.</figcaption>
+  </figure>
+
+  <h3>Consistent Action Sequences &amp; Zoomable Shots</h3>
+  <div class="two-col">
+    <figure>
+      <img src="assets/fig15_actionseq.jpg" alt="Consistent action sequence generation">
+      <figcaption><b>Figure 15.</b> Consistent action sequence generation under the same identity.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/fig16_zoom.jpg" alt="Multi-scale zoomable shot generation">
+      <figcaption><b>Figure 16.</b> Multi-scale (zoomable) shot generation, from wide shot to close shot, under the same identity.</figcaption>
+    </figure>
+  </div>
+
+  <h3>Stylization &amp; Gender Control</h3>
+  <figure>
+    <img src="assets/fig17_stylization.jpg" alt="Stylization and gender control">
+    <figcaption><b>Figure 17.</b> Stylization and gender control. Our method enables film-grade character stylization while retaining identity.</figcaption>
+  </figure>
+  <figure>
+    <img src="assets/fig18_gender.jpg" alt="Gender expression enhancement">
+    <figcaption><b>Figure 18.</b> Gender expression enhancement. Our method markedly improves the accuracy of prompt-specified gender expression compared with the baseline.</figcaption>
+  </figure>
+
+  <h3>More Generation Results</h3>
+  <figure>
+    <img src="assets/fig33_extension.jpg" alt="Extended generation results on the extension set">
+    <figcaption><b>Figure 19.</b> Extended generation results on the extension set. BeyondFacial preserves identity across harder, more compositional prompts.</figcaption>
+  </figure>
+  <figure>
+    <img src="assets/fig25_visualization.jpg" alt="Additional visualization results">
+    <figcaption><b>Figure 20.</b> Additional visualization results of BeyondFacial.</figcaption>
+  </figure>
+</section>
+
+<section id="limitations">
+  <h2>Limitations</h2>
+  <figure>
+    <img src="assets/fig9_failure.jpg" alt="Four failure modes of BeyondFacial">
+    <figcaption><b>Figure 21.</b> Four failure modes of BeyondFacial: (1) distant/small faces degrade identity fidelity; (2) extreme poses; (3) heavy occlusion; (4) complex multi-person interactions.</figcaption>
+  </figure>
+</section>
+
+<section id="bibtex">
+  <h2>BibTeX</h2>
+  <pre class="bibtex">@inproceedings{zhang2026beyondfacial,
+  author    = {Zhang, Songsong and Tang, Chuanqi and Li, Minglong and Li, Xueqiong and
+               Yang, Shaowu and Peng, Yuanxi and Yang, Wenjing and Zhao, Jing},
+  title     = {BeyondFacial: Identity-Preserving Personalized Generation Beyond Facial Close-ups},
+  booktitle = {Proceedings of the 34th ACM International Conference on Multimedia (ACM MM)},
+  year      = {2026},
+  publisher = {ACM},
+  doi       = {10.1145/3767308.3836071}
+}</pre>
+</section>
+
+<footer>
+  <p>© 2026 The Authors. This project page is maintained by the DIDS-AIGC group, National University of Defense Technology.</p>
+</footer>
+
+</div>
+</body>
+</html>
